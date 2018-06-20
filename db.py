@@ -27,7 +27,7 @@ def close(conn, cursor):
 #获取所有已发布博文
 def allArticle():
     conn, cursor = open()
-    cursor.execute("SELECT content,id from craft where type = '1' order by id DESC ;")
+    cursor.execute("SELECT content,id,title from craft where type = '1' order by id DESC ;")
     result = cursor.fetchall()
     close(conn, cursor)
     return result
@@ -51,7 +51,7 @@ def APIlogin(result):
     return result
 
 #添加博文
-def addArticle(data, userId):
+def addArticle(data, userId, op):
     conn, cursor = open()
     data["title"] = MySQLdb.escape_string(data["title"].decode("utf-8"))
     data["content"] = MySQLdb.escape_string(data["content"].decode("utf-8"))
@@ -59,10 +59,12 @@ def addArticle(data, userId):
     today = datetime.date.today()
     cursor.execute(
         "insert into craft(userid,title,content,pubTime,type) values ('%s','%s','%s','%s','%s')" % (
-            userId, data["title"], data["content"], today.strftime("%Y-%m-%d"), "0"))
+            userId, data["title"], data["content"], today.strftime("%Y-%m-%d"), op))
     conn.commit()
+    #cursor.execute("select id from craft where ")
+    #result = cursor.fetchall()
     close(conn, cursor)
-    return
+    return 
 
 #获取博文信息
 def articleManage():
@@ -79,10 +81,25 @@ def change(result):
     result[0] = MySQLdb.escape_string(str(result[0]))
     result[1] = MySQLdb.escape_string(result[1])
     cursor = conn.cursor()
-    cursor.execute("UPDATE craft set type = '%s' where id = '%s';" % (result[1], result[0]))
+    if (result[1] == '4'):
+        cursor.execute("DELETE FROM craft where id = '%s'; "%(result[0]))
+    else:
+        cursor.execute("UPDATE craft set type = '%s' where id = '%s';" % (result[1], result[0]))
     conn.commit()
     close(conn, cursor)
     return
+
+# #删除博文
+# def delete(result):
+#     conn,cursor = open()
+#     result[0] = MySQLdb.escape_string(str(result[0]))
+#     result[1] = MySQLdb.escape_string(result[1])
+#     cursor = conn.cursor()
+#     cursor.execute("DELETE FROM craft where id = '%s'; "%(result[0]))
+#     conn.commit()
+#     close(conn,cursor)
+#     return
+
 
 #获取所有账号密码
 def verifyToken():

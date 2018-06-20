@@ -28,6 +28,7 @@ def allArticle():
     ret = []
     for i in result:
         ret.append({
+            "title":i[2],
             "content": i[0],
             "href": "./article/" + str(i[1])})
     return json.dumps(ret)
@@ -103,10 +104,11 @@ def manage():
 @app.route('/API/addArticle/', methods=["POST"])
 def addArticle():
     isUser, userId = verifyToken(request.cookies.get("token"))
+
     if isUser:
         data = json.loads(request.get_data())
         print data
-        db.addArticle(data, userId)
+        db.addArticle(data["data"], userId,data["op"])
         ret = {"status": "success"}
         return json.dumps(ret)
     ret = {"status": "fail"}
@@ -137,6 +139,10 @@ def change():
     if isUser:
         ret = {"status": "success"}
         result = json.loads(request.get_data())
+        # if (result[1] == '4'): #删除博文
+        #     result = json.loads(request.get_data())
+        #     db.delete(result)
+        #     return json.dumps(ret)
         print result
         db.change(result)
         return json.dumps(ret)

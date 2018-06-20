@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Blog</title>
+    <title>Shakespeare - The blog</title>
     <script src="//cdn.bootcss.com/vue/2.1.10/vue.min.js"></script>
     <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.js"></script>
     <link href="//cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.css" rel="stylesheet">
@@ -39,15 +39,6 @@
             position: absolute;
             right: 20px;
             top: -80px;
-        }
-        #top #aboutleft{
-            position: absolute;
-            left: 20px;
-            top: -80px;
-        }
-        
-        #top #aboutleft a{
-            color: #ffffff;
         }
 
         #top #about a {
@@ -94,9 +85,8 @@
 <div id="header">
     <div id="top">
         <div id="description">
-            <div id="aboutleft"><a href="http://111.230.98.25/login" target="_blank">登陆</a></div><br>
-            <div id="about"><a href="https://github.com/bobbymly/" target="_blank">关于作者</a></div>
-            <h1 id="headtitle">uncleyuan's Blog</h1>
+            <div id="about"><a href="https://github.com/hating/" target="_blank">关于作者</a></div>
+            <h1 id="headtitle">Shakespeare</h1>
             <p id="headtext">Write and explode.</p>
         </div>
         <input type="text" placeholder="请输入要检索的文字，支持Markdown语法" id="search" v-model="keyword" v-on:keyup="search">
@@ -105,7 +95,6 @@
 <div id="content">
     <div class="list-group ">
         <a v-bind:href="item.href" class="list-group-item article" title="查看全文" v-for="item in articles">
-            <!-- <span class="glyphicon glyphicon-arrow-right"></span> -->
             <div v-html="item.content" class="markdown-body"></div>
         </a>
     </div>
@@ -123,7 +112,6 @@
             articles: showarticles
         }
     });
-    // 获取博文
     $.ajax({
         url: "./API/allArticle",
         type: "GET",
@@ -134,23 +122,10 @@
             result = JSON.parse(result);
             for (let i of result) {
                 loadarticles.push(i);
-                
-                // tree = markdown.parse(i.content);
-                // let title = "无标题";
-                // for (let i of tree) {
-                //     if (i[0] == "header") {
-                //         title = i[2];
-                //         break;
-                //     }
-                // }
-                //markdown.toHTML(i.content)
-                
-                showarticles.push({content: i.title+"<span style=\"float:right;\" class=\"glyphicon glyphicon-arrow-right\"></span>", href: i.href});
+                showarticles.push({content: markdown.toHTML(i.content), href: i.href});
             }
         }
     });
-
-    //内容搜索
     let search = new Vue({
         el: "#search",
         data: {
@@ -158,22 +133,22 @@
         },
         methods: {
             search: function () {
-                while (showarticles.length != 0) {
-                    showarticles.shift();
-                }
                 if (search.keyword != "") {
+                    while (showarticles.length != 0) {
+                        showarticles.shift();
+                    }
                     let re = RegExp(search.keyword);
                     for (let i of loadarticles) {
                         if (re.exec(i.content) != null) {
-                            showarticles.push({content: i.title+"<span style=\"float:right;\" class=\"glyphicon glyphicon-arrow-right\"></span>", href: i.href});
+                            showarticles.push({content: markdown.toHTML(i.content), href: i.href});
                         }
                     }
                 } else {
-                    // while (showarticles.length != 0) {
-                    //     showarticles.shift();
-                    // }
+                    while (showarticles.length != 0) {
+                        showarticles.shift();
+                    }
                     for (let i of loadarticles) {
-                        showarticles.push({content: i.title+"<span style=\"float:right;\" class=\"glyphicon glyphicon-arrow-right\"></span>", href: i.href});
+                        showarticles.push({content: markdown.toHTML(i.content), href: i.href});
                     }
                 }
             }

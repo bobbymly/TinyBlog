@@ -42,6 +42,15 @@
         #outerPanel #submit {
             float: right;
             margin-top: 6px;
+            margin:10px;
+            /* padding: 10px; */
+        }
+
+        #outerPanel #submitALL {
+            float: right;
+            margin-top: 6px;
+            margin:10px;
+            /* padding: 10px; */
         }
 
         #outerPanel #fun2body {
@@ -85,7 +94,9 @@
             <textarea class="form-control" rows="36" placeholder="在这里输入Markdown格式的文章" v-model="content"></textarea>
             <div class="alert alert-danger" role="alert" v-text="loginStatus" id="showStatus"
                  v-bind:style="{visibility:visibility}"></div>
-            <button type="button" class="btn btn-success" id="submit" v-on:click="submit">提交</button>
+            
+            <button type="button" class="btn btn-success" id="submitALL" v-on:click="submit(1)">直接发布</button>
+            <button type="button" class="btn btn-success" id="submit" v-on:click="submit(0)">存为草稿</button>
         </div>
         <div id="func2">
             <div class="panel panel-default">
@@ -182,7 +193,7 @@
             visibility: "hidden"
         },
         methods: {
-            submit: function () {
+            submit: function (option) {
                 tree = markdown.parse(func1.content);
                 let title = "无标题";
                 for (let i of tree) {
@@ -192,9 +203,13 @@
                     }
                 }
                 let data = {
-                    title: title,
-                    content: func1.content
+                    op: option,
+                    data:{
+                        title: title,
+                        content: func1.content
+                    }
                 };
+                
                 //添加博文,默认存为草稿
                 $.ajax({
                     url: "../API/addArticle/",
@@ -203,7 +218,8 @@
                     success: function (result) {
                         result = JSON.parse(result);
                         console.log(result);
-                        func1.loginStatus = "成功添加文章到草稿箱，请到文章状态管理将其发布。";
+                        if(option==0)func1.loginStatus = "成功添加文章到草稿箱，请到文章状态管理将其发布。";
+                        if(option==1)func1.loginStatus = "成功发布文章。";
                         func1.visibility = "visible";
                         setTimeout(function () {
                             func1.visibility = "hidden";
@@ -212,7 +228,9 @@
                         reload();
                     }
                 })
-            }
+            },
+            
+            
         }
     });
     let func2 = new Vue({

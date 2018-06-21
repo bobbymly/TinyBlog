@@ -174,7 +174,7 @@ def insertCraft():
     conn, cursor = open()
     today = datetime.date.today()
     cursor.execute(
-        "insert into craft values('1','1','你好世界！','# 你好世界！\n\n* Shakespeare是一个轻量型的，基于ES6编写的个人博客； \n* 这是博客的第一篇文章；\n* 赶紧进入后台发表文章吧！','%s','1');" % (
+        "insert into craft values('1','1','Hello World！','# Hello World!\n\n* 这是一个轻量的博客，支持 markdown； \n* 这是博客的第一篇文章；','%s','1');" % (
             today.strftime(
                 "%Y-%m-%d")))
     conn.commit()

@@ -89,6 +89,20 @@ def change(result):
     close(conn, cursor)
     return
 
+def alterArticle(content,id):
+    conn, cursor = open()
+    # data["title"] = MySQLdb.escape_string(data["title"].decode("utf-8"))
+    content= MySQLdb.escape_string(content.decode("utf-8"))
+    cursor = conn.cursor()
+    cursor.execute(
+        "update craft set content='%s' where id='%s' " % (content,id))
+    conn.commit()
+    #cursor.execute("select id from craft where ")
+    #result = cursor.fetchall()
+    close(conn, cursor)
+    return 
+
+
 # #删除博文
 # def delete(result):
 #     conn,cursor = open()

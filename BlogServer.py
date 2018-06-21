@@ -130,6 +130,19 @@ def articleManage():
         })
     return json.dumps(ret)
 
+@app.route('/API/alterArticle/<id>',methods=["POST"])
+def alterArticle(id=id):
+    isUser, userId = verifyToken(request.cookies.get("token"))
+    if isUser:
+        data = json.loads(request.get_data())
+        print data
+        db.alterArticle(data,id)
+        ret = {"status": "success"}
+        return json.dumps(ret)
+    ret = {"status": "fail"}
+    return json.dumps(ret)
+
+    
 
 #
 @app.route('/API/change/', methods=["POST"])

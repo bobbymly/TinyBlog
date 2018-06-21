@@ -81,7 +81,8 @@
             margin-bottom: 5px;
             min-height: 40px;
             max-height: 800px;
-            overflow:auto;
+            overflow:hidden;
+            Text-overflow: ellipsis;
         }
 
         #content a:hover {
@@ -104,9 +105,11 @@
 </div>
 <div id="content">
     <div class="list-group ">
-        <a v-bind:href="item.href" class="list-group-item article" title="查看全文" v-for="item in articles">
+        <a style="height:90px;" v-bind:href="item.href" class="list-group-item article" title="查看全文" v-for="item in articles">
             <!-- <span class="glyphicon glyphicon-arrow-right"></span> -->
-            <div v-html="item.content" class="markdown-body"></div>
+            <!-- <div style="height:60px;"> -->
+            <div  style="Text-overflow: ellipsis;" v-html="item.content" class="markdown-body"></div>
+            <!-- </div> -->
         </a>
     </div>
 </div>
@@ -145,7 +148,7 @@
                 // }
                 //markdown.toHTML(i.content)
                 
-                showarticles.push({content: i.title+"<span style=\"float:right;\" class=\"glyphicon glyphicon-arrow-right\"></span>", href: i.href});
+                showarticles.push({content: "<h3>"+i.title+"<span style=\"float:right;\" class=\"glyphicon glyphicon-arrow-right\"></span></h3>"+(markdown.toHTML(i.content)).replace(/<[^>]+>/g,"").substring(0,100)+" ……", href: i.href});
             }
         }
     });
@@ -165,7 +168,7 @@
                     let re = RegExp(search.keyword);
                     for (let i of loadarticles) {
                         if (re.exec(i.content) != null) {
-                            showarticles.push({content: i.title+"<span style=\"float:right;\" class=\"glyphicon glyphicon-arrow-right\"></span>", href: i.href});
+                            showarticles.push({content: "<h3>"+i.title+"<span style=\"float:right;\" class=\"glyphicon glyphicon-arrow-right\"></span></h3>"+(markdown.toHTML(i.content)).replace(/<[^>]+>/g,"").substring(0,100)+" ……", href: i.href});
                         }
                     }
                 } else {
@@ -173,7 +176,7 @@
                     //     showarticles.shift();
                     // }
                     for (let i of loadarticles) {
-                        showarticles.push({content: i.title+"<span style=\"float:right;\" class=\"glyphicon glyphicon-arrow-right\"></span>", href: i.href});
+                        showarticles.push({content: "<h3>"+i.title+"<span style=\"float:right;\" class=\"glyphicon glyphicon-arrow-right\"></span></h3>"+(markdown.toHTML(i.content)).replace(/<[^>]+>/g,"").substring(0,100)+" ……", href: i.href});
                     }
                 }
             }

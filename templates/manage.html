@@ -39,19 +39,13 @@
             text-align: center;
         }
 
-        #outerPanel #submit {
+        #outerPanel #submit,#submitALL,#saveAlter,#notSave {
             float: right;
             margin-top: 6px;
             margin:10px;
             /* padding: 10px; */
         }
-
-        #outerPanel #submitALL {
-            float: right;
-            margin-top: 6px;
-            margin:10px;
-            /* padding: 10px; */
-        }
+        
 
         #outerPanel #fun2body {
             min-height: 740px;
@@ -87,6 +81,7 @@
         <div class="list-group">
             <a href="#" class="list-group-item active" v-on:click="add" id="add">新增文章</a>
             <a href="#" class="list-group-item" v-on:click="manage" id="manage">文章状态管理</a>
+            <a href="#" class="list-group-item" v-on:click="alter" id="alter">文章修改</a>
         </div>
     </div>
     <div class="panel-body" id="func">
@@ -98,6 +93,14 @@
             <button type="button" class="btn btn-success" id="submitALL" v-on:click="submit(1)">直接发布</button>
             <button type="button" class="btn btn-success" id="submit" v-on:click="submit(0)">存为草稿</button>
         </div>
+        <div id="func3" >
+            
+            <textarea class="form-control" rows="36" placeholder="在这里输入Markdown格式的文章" v-model="content2"></textarea>
+            <!-- <div class="alert alert-danger" role="alert" v-text="loginStatus" id="showStatus2"
+                    v-bind:style="{visibility:visibility}"></div> -->            
+            <button type="button"  class="btn btn-success" id="notSave" v-on:click="notSave">放弃保存</button>
+            <button type="button"  class="btn btn-success" id="saveAlter" v-on:click="saveAlter">保存修改</button>
+        </div>
         <div id="func2">
             <div class="panel panel-default">
                 <div class="panel-body" id="fun2body">
@@ -108,6 +111,7 @@
                             <th>发表日期</th>
                             <th>文章状态</th>
                             <th>修改状态</th>
+                            <th>修改文章</th>
                         </tr>
 
                         <!--Interesting.
@@ -127,6 +131,7 @@
                                 <option value="3">特殊用途</option>
                                 <option value="4">直接删除</option>
                             </select></td>
+                            <td><a href="#" id="Alter" v-on:click="Alter(item.id)">修改</a></td>
                         </tr>
                     </table>
                 </div>
@@ -139,6 +144,8 @@
 {% endraw %}
 <script>
     $("#func2").hide();
+    $("#func3").hide();
+    $("#alter").hide();
     let reload = function () {
         // 获取博文信息,刷新列表内容
         $.ajax({
@@ -174,15 +181,31 @@
             add: function () {
                 $("#func2").hide();
                 $("#func1").show();
+                $("#func3").hide();
+                $("#alter").hide();
+                $("#alter").removeClass("active");
                 $("#add").addClass("active");
                 $("#manage").removeClass("active");
             },
             manage: function () {
                 $("#func1").hide();
                 $("#func2").show();
+                $("#func3").hide();
+                $("#alter").hide();
+                $("#alter").removeClass("active");
                 $("#add").removeClass("active");
                 $("#manage").addClass("active");
+            },
+            alter: function () {
+                $("#func2").hide();
+                $("#func1").hide();
+                $("#func3").show();
+                $("#alter").show();
+                $("#alter").addClass("active");
+                $("#add").removeClass("active");
+                $("#manage").removeClass("active");
             }
+
         }
     });
     let func1 = new Vue({
@@ -265,9 +288,72 @@
                     }
                 }
 
+            },
+            Alter: function(id) {
+                $("#func2").hide();
+                $("#func1").hide();
+                $("#func3").show();
+                $("#alter").show();
+                $("#alter").addClass("active");
+                $("#add").removeClass("active");
+                $("#manage").removeClass("active");
+                func3.myId=id;
+                
+                $.ajax({
+                    url: "../API/article/"+id,
+                    type: "GET",
+                    success: function (result) {
+                        result = JSON.parse(result);
+                        console.log(result);
+                        func3.content2 = result[0];
+                    }
+                })
+
+
+                //func3.content2=
             }
+
         }
     });
+
+    let func3 = new Vue({
+        el: "#func3",
+        data: {
+            myId:-1,
+            content2:"",
+            visibility:"hidden"
+        },
+        methods: {
+            saveAlter: function(){
+                
+                $.ajax({
+                    url: "../API/alterArticle/"+func3.myId,
+                    method: "POST",
+                    data: JSON.stringify(func3.content2),
+                    success: function (result) {
+                        result = JSON.parse(result);
+                        console.log(result);
+                        setTimeout(function () {
+                            func3.visibility = "hidden";
+                        }, 6000);
+                        func3.content = "";
+                        reload();
+                    }
+                })
+                alert("修改成功！");
+                $("#alter").hide();
+                nav.manage();
+            },
+
+            notSave: function(){
+                func3.content = "";
+                $("#alter").hide();
+                nav.manage();
+            }        
+        }
+        
+    });
+
     reload();
 </script>
 </html>

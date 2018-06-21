@@ -129,10 +129,10 @@ def createUser():
     cursor.execute("DROP table if EXISTS user")
     cursor.execute('''create table user (
 id INT(11) primary key not null unique auto_increment,
-name VARCHAR(45),
+name VARCHAR(45) NOT NULL,
 isAdmin VARCHAR(45),
-regTime DATE,
-password VARCHAR(45)
+regTime DATE NOT NULL,
+password VARCHAR(45) NOT NULL
 )''')
     close(conn, cursor)
     return
@@ -143,11 +143,11 @@ def createCraft():
     cursor.execute("DROP table if EXISTS craft")
     cursor.execute('''create table craft (
 id INT(11) primary key not null unique auto_increment,
-userid INT(11),
+userid INT(11) NOT NULL,
 title LONGTEXT,
 content LONGTEXT,
-pubTime date,
-type INT(11)
+pubTime date NOT NULL,
+type INT(11) NOT NULL
 )
 ''')
     close(conn, cursor)

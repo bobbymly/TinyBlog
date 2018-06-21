@@ -130,6 +130,7 @@ def articleManage():
         })
     return json.dumps(ret)
 
+#修改博文
 @app.route('/API/alterArticle/<id>',methods=["POST"])
 def alterArticle(id=id):
     isUser, userId = verifyToken(request.cookies.get("token"))
@@ -144,7 +145,7 @@ def alterArticle(id=id):
 
     
 
-#
+#修改博文状态
 @app.route('/API/change/', methods=["POST"])
 def change():
     #每一次需要修改数据库的操作前都需要先验证

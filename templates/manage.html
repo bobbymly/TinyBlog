@@ -26,12 +26,12 @@
         }
 
         #outerPanel #nav {
-            background: #b896ab;
+            background: #8b9ffa;
             min-width: 300px;
         }
 
         #outerPanel #func {
-            background-color: #cbbdb3;
+            background-color: #cfcece;
             min-width: 900px;
         }
 
@@ -79,12 +79,50 @@
 
     <div class="panel-body" id="nav">
         <div class="list-group">
-            <a href="#" class="list-group-item active" v-on:click="add" id="add">新增文章</a>
-            <a href="#" class="list-group-item" v-on:click="manage" id="manage">文章状态管理</a>
+            <a href="#" class="list-group-item active" v-on:click="manage" id="manage">文章状态管理</a>
+            <a href="#" class="list-group-item" v-on:click="add" id="add">新增文章</a>
             <a href="#" class="list-group-item" v-on:click="alter" id="alter">文章修改</a>
         </div>
     </div>
     <div class="panel-body" id="func">
+            <div id="func2">
+                    <div class="panel panel-default">
+                        <div class="panel-body" id="fun2body">
+                            <table class="table table-hover table-striped" id="articleList">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>文章标题</th>
+                                    <th>发表日期</th>
+                                    <th>文章状态</th>
+                                    <th>修改状态</th>
+                                    <th>修改文章</th>
+                                </tr>
+        
+                                <!--Interesting.
+                                <tr v-for="item in manage">-->
+                                <!--<div>{{ item }}</div>-->
+                                <!--</tr>-->
+        
+                                <tr v-for="item in manage">
+                                    <td>{{ item.id }}</td>
+                                    <td><a v-bind:href="item.link" target="_blank">{{ item.title }}</a></td>
+                                    <td>{{ item.pubTime }}</td>
+                                    <td>{{ item.statusText }}</td>
+                                    <td><select class="form-control" v-model="item.toStatus">
+                                        <option value="0">移为草稿</option>
+                                        <option value="1">发表文章</option>
+                                        <option value="2">取消发表</option>
+                                        <option value="3">特殊用途</option>
+                                        <option value="4">直接删除</option>
+                                    </select></td>
+                                    <td><a href="#" id="Alter" v-on:click="Alter(item.id)">修改</a></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-success" id="apply" v-on:click="applyChange">应用</button>
+                </div>
+
         <div id="func1">
             <textarea class="form-control" rows="36" placeholder="在这里输入Markdown格式的文章" v-model="content"></textarea>
             <div class="alert alert-danger" role="alert" v-text="loginStatus" id="showStatus"
@@ -101,49 +139,13 @@
             <button type="button"  class="btn btn-success" id="notSave" v-on:click="notSave">放弃保存</button>
             <button type="button"  class="btn btn-success" id="saveAlter" v-on:click="saveAlter">保存修改</button>
         </div>
-        <div id="func2">
-            <div class="panel panel-default">
-                <div class="panel-body" id="fun2body">
-                    <table class="table table-hover table-striped" id="articleList">
-                        <tr>
-                            <th>ID</th>
-                            <th>文章标题</th>
-                            <th>发表日期</th>
-                            <th>文章状态</th>
-                            <th>修改状态</th>
-                            <th>修改文章</th>
-                        </tr>
-
-                        <!--Interesting.
-                        <tr v-for="item in manage">-->
-                        <!--<div>{{ item }}</div>-->
-                        <!--</tr>-->
-
-                        <tr v-for="item in manage">
-                            <td>{{ item.id }}</td>
-                            <td><a v-bind:href="item.link" target="_blank">{{ item.title }}</a></td>
-                            <td>{{ item.pubTime }}</td>
-                            <td>{{ item.statusText }}</td>
-                            <td><select class="form-control" v-model="item.toStatus">
-                                <option value="0">移为草稿</option>
-                                <option value="1">发表文章</option>
-                                <option value="2">取消发表</option>
-                                <option value="3">特殊用途</option>
-                                <option value="4">直接删除</option>
-                            </select></td>
-                            <td><a href="#" id="Alter" v-on:click="Alter(item.id)">修改</a></td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-            <button type="button" class="btn btn-success" id="apply" v-on:click="applyChange">应用</button>
-        </div>
+        
     </div>
 </div>
 </body>
 {% endraw %}
 <script>
-    $("#func2").hide();
+    $("#func1").hide();
     $("#func3").hide();
     $("#alter").hide();
     let reload = function () {
